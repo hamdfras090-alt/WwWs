@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شيتاتي - جامعة ناصر</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">شيتاتي</div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <!-- Role Toggle Switch -->
+            <div class="role-toggle-container" id="roleToggleContainer" style="display: none;">
+                <div class="role-toggle">
+                    <button class="role-option" id="roleToggleStudent" data-role="student">
+                        <span class="role-icon">👨‍🎓</span>
+                        <span class="role-text">طالب</span>
+                    </button>
+                    <button class="role-option" id="roleToggleTA" data-role="assistant">
+                        <span class="role-icon">👨‍💼</span>
+                        <span class="role-text">مساعد</span>
+                    </button>
+                    <button class="role-option active" id="roleToggleDoctor" data-role="doctor">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span class="role-text">دكتور</span>
+                    </button>
+                    <div class="role-slider"></div>
+                </div>
+            </div>
+
+            <!-- Notification Bell with Dropdown -->
+            <div class="notification-container">
+                <button id="notificationBell" class="notification-bell" onclick="toggleNotificationMenu(event)"
+                    title="إعدادات الإشعارات">
+                    <span class="bell-icon">🔔</span>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;"></span>
+                </button>
+
+                <!-- Notification Dropdown Menu -->
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-menu-header">
+                        <span>⚙️ الإشعارات</span>
+                    </div>
+                    <div class="notification-menu-item" id="toggleNotificationItem">
+                        <span class="notification-menu-icon">🔕</span>
+                        <span class="notification-menu-text">تفعيل الإشعارات</span>
+                    </div>
+                    <div class="notification-menu-footer">
+                        <small>سنخبرك عند إضافة مواد جديدة 📚</small>
+                    </div>
+                </div>
+            </div>
+
+            <button id="openPublishModalBtn" class="theme-toggle"
+                style="display: none; width: auto; padding: 0 15px; border-radius: 20px; font-size: 0.9rem;">
+                ➕ إضافة مادة
+            </button>
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        <div class="uni-name">جامعة ناصر</div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="sheetaty_logo.jpg" class="hero-image" alt="شعار شيتاتي">
+            <h1>مكتبتك الجامعية في جيبك 📚</h1>
+            <p>جميع محاضرات وملخصات طلاب جامعة ناصر في مكان واحد. ذاكر بذكاء! 💡</p>
+
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="ابحث عن اسم المادة (مثال: اقتصاد، محاسبة)...">
+            </div>
+        </section>
+
+        <section id="resultsGrid" class="results-grid">
+            <!-- Cards will be injected here by JS -->
+        </section>
+
+
+    </main>
+
+    <footer>
+        <p>تم التطوير لخدمة طلاب جامعة ناصر 🎓</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">شيتاتي 2025 © منصة طلابية تعليمية</p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModal" class="close-btn">&times;</button>
+            <div id="modalBody">
+                <!-- Modal content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">&times;</button>
+        <img id="lightboxImg" src="" alt="تكبير">
+    </div>
+
+    <!-- Publish Modal -->
+    <div id="publishModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closePublishModal" class="close-btn">&times;</button>
+            <h2>إضافة مادة جديدة</h2>
+            <form id="publishForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="pubTitle" placeholder="1️⃣ اسم المادة" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="text" id="pubDoctors" placeholder="2️⃣ اسم الدكتور" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+
+                <div
+                    style="text-align: center; margin: 10px 0; padding: 10px; background-color: #f0f8ff; border-radius: 5px;">
+                    <a href="https://www.file.io/" target="_blank"
+                        style="color: #0070f3; text-decoration: none; font-weight: bold; font-size: 1rem;">
+                        3️⃣ 🔗 اضغط هنا لرفع الملف على File.io
+                    </a>
+                </div>
+
+                <input type="url" id="pubShareLink" placeholder="4️⃣ الصق هنا رابط المشاركة من File.io" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+
+                <label for="pubImageFile"
+                    style="cursor: pointer; display: block; padding: 10px; border: 1px dashed #ddd; border-radius: 5px; text-align: center; background-color: #f9f9f9;">
+                    5️⃣ اضغط هنا لاختيار صورة خلفية من جهازك 🖼️
+                    <input type="file" id="pubImageFile" accept="image/*" style="display: none;">
+                </label>
+                <div id="imagePreviewContainer" style="text-align: center; margin-top: 5px; display: none;">
+                    <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; border-radius: 5px;">
+                </div>
+
+                <div style="text-align: center; font-size:0.8rem; color:#666; margin-top:5px;">
+                    سيتم عرض: اسم المادة - اسم الدكتور - رابط التحميل
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">نشر الآن 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModalOverlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <button id="closeDeleteModal" class="close-btn">&times;</button>
+            <h2 style="color: #ef4444; margin-bottom: 1rem;">⚠️ تأكيد الحذف</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                لحذف هذه المادة، يرجى إدخال كود التأكيد:
+            </p>
+            <form id="deleteForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="password" id="deleteCode" placeholder="أدخل كود الحذف" required
+                    style="padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem; text-align: center;">
+                <div id="deleteError" style="color: #ef4444; font-size: 0.9rem; display: none; margin-top: -5px;">
+                    ❌ الكود غير صحيح! حاول مرة أخرى.
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="submit" class="btn-primary" style="background-color: #ef4444;">
+                        🗑️ حذف المادة
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="window.closeDeleteModal()">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating "Test Yourself" Button -->
+    <div id="testYourselfBtn" class="test-yourself-fab" title="اختبر نفسك">
+        <div class="fab-icon">📝</div>
+        <div class="fab-text">اختبر نفسك</div>
+    </div>
+
+    <!-- Test Yourself Modal -->
+    <div id="testYourselfModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <button id="closeTestYourselfModal" class="close-btn">&times;</button>
+            <div style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🤖</div>
+                <h2 style="margin-bottom: 1rem; color: var(--text-main);">اختبر نفسك</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                    أرسل صور المواد الدراسية إلى بوت جامعة ناصر الذكي وسيقوم بإعطائك أسئلة متنوعة حول هذه المادة لاختبار
+                    معلوماتك! 📚✨
+                </p>
+                <a href="telegram-bot.html" target="_blank" class="btn-primary"
+                    style="display: inline-flex; align-items: center; gap: 10px; padding: 1rem 2rem; background: var(--gradient-main); border: none; border-radius: 15px; color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; transition: all 0.3s ease; box-shadow: var(--shadow);">
+                    <span>✈️</span>
+                    <span>ذهاب</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Selection Modal -->
+    <div id="roleModalOverlay" class="modal-overlay" style="z-index: 2000;">
+        <div class="modal-content" style="text-align: center;">
+            <h2>مرحباً بك في شيتاتي 👋</h2>
+            <p>من فضلك اختر صفتك للمتابعة:</p>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                <button id="roleStudentBtn" class="btn-primary" style="background-color: #4CAF50; width: 120px;">
+                    👨‍🎓 طالب
+                </button>
+                <button id="roleAssistantBtn" class="btn-primary" style="background-color: #FF9800; width: 120px;">
+                    👨‍💼 طالب مساعد
+                </button>
+                <button id="roleDoctorBtn" class="btn-primary" style="background-color: #2196F3; width: 120px;">
+                    👨‍🏫 دكتور
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div id="quizModalBody">
+                <!-- Quiz content will be injected here by quiz.js -->
+            </div>
+        </div>
+    </div>
+
+    <!-- UI Logic (Independent of Database) -->
+    <!-- Firebase Compat (for file:// support) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
+    <script src="ui.js" defer></script>
+    <script src="firebase-init.js"></script>
+    <script src="rating.js"></script>
+    <script src="quiz.js"></script>
+    <script src="notifications.js"></script>
+    <!-- data.js removed to avoid conflicts, data is handled by script.js -->
+    <script src="script.js"></script>
+</body>
+
+</html>

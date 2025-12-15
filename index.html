@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>شيتاتي - جامعة ناصر</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <header>
+        <div class="logo">
+            <img src="logo-sheetatee.jpg" alt="شيتاتي" class="logo-image">
+        </div>
+        <div style="display: flex; gap: 15px; align-items: center;">
+            <!-- Role Toggle Switch -->
+            <div class="role-toggle-container" id="roleToggleContainer" style="display: none;">
+                <div class="role-toggle">
+                    <button class="role-option" id="roleToggleStudent" data-role="student">
+                        <span class="role-icon">👨‍🎓</span>
+                        <span class="role-text">طالب</span>
+                    </button>
+                    <button class="role-option" id="roleToggleTA" data-role="assistant">
+                        <span class="role-icon">👨‍💼</span>
+                        <span class="role-text">مساعد</span>
+                    </button>
+                    <button class="role-option active" id="roleToggleDoctor" data-role="doctor">
+                        <span class="role-icon">👨‍🏫</span>
+                        <span class="role-text">دكتور</span>
+                    </button>
+                    <div class="role-slider"></div>
+                </div>
+            </div>
+
+            <!-- Notification Bell with Dropdown -->
+            <div class="notification-container">
+                <button id="notificationBell" class="notification-bell" onclick="toggleNotificationMenu(event)"
+                    title="إعدادات الإشعارات">
+                    <span class="bell-icon">🔔</span>
+                    <span class="notification-badge" id="notificationBadge" style="display: none;"></span>
+                </button>
+
+                <!-- Notification Dropdown Menu -->
+                <div id="notificationMenu" class="notification-menu">
+                    <div class="notification-menu-header">
+                        <span>⚙️ الإشعارات</span>
+                    </div>
+                    <div class="notification-menu-item" id="toggleNotificationItem">
+                        <span class="notification-menu-icon">🔕</span>
+                        <span class="notification-menu-text">تفعيل الإشعارات</span>
+                    </div>
+                    <div class="notification-menu-footer">
+                        <small>سنخبرك عند إضافة مواد جديدة 📚</small>
+                    </div>
+                </div>
+            </div>
+
+            <button id="openPublishModalBtn" class="theme-toggle"
+                style="display: none; width: auto; padding: 0 15px; border-radius: 20px; font-size: 0.9rem;">
+                ➕ إضافة مادة
+            </button>
+
+            <!-- Donations Page Button -->
+            <button id="openDonationsPageBtn" class="donations-page-btn" title="شيتك يوصل لغيرك">
+                <span class="donations-icon">🤝</span>
+                <span class="donations-text">شيتك يوصل لغيرك</span>
+            </button>
+
+            <button id="themeToggle" class="theme-toggle" aria-label="Toggle Dark Mode">
+                <span class="theme-icon">🌙</span>
+            </button>
+        </div>
+        <div class="uni-name">جامعة ناصر</div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <img src="sheetaty_logo.jpg" class="hero-image" alt="شعار شيتاتي">
+            <h1>مكتبتك الجامعية في جيبك 📚</h1>
+            <p>جميع محاضرات وملخصات طلاب جامعة ناصر في مكان واحد. ذاكر بذكاء! 💡</p>
+
+            <div class="search-container">
+                <input type="text" id="searchInput" class="search-input"
+                    placeholder="ابحث عن اسم المادة (مثال: اقتصاد، محاسبة)...">
+            </div>
+        </section>
+
+        <section id="resultsGrid" class="results-grid">
+            <!-- Cards will be injected here by JS -->
+        </section>
+
+        </section>
+
+        <!-- Donors Honor Board -->
+        <section class="donors-section" id="donorsSection" style="display: none;">
+            <div class="section-header">
+                <h2>👑 لوحة الشرف</h2>
+                <p>شكراً لأصحاب الأيادي البيضاء الذين ساهموا في نشر العلم</p>
+            </div>
+            <div class="donors-grid" id="donorsGrid">
+                <!-- Donor cards injected here -->
+            </div>
+        </section>
+
+        <!-- All Contributions Section -->
+        <section class="contributions-section" id="contributionsSection" style="display: none !important;">
+            <div class="section-header">
+                <h2>📋 جميع المساهمات</h2>
+                <p>استعرض جميع البيانات التفصيلية للمتبرعين والمساهمين في نشر العلم</p>
+                <div class="contributions-stats">
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalContributions">0</span>
+                        <span class="stat-label">مساهمة</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-number" id="totalBooks">0</span>
+                        <span class="stat-label">كتاب/شيت</span>
+                    </div>
+                </div>
+            </div>
+            <div class="contributions-list" id="contributionsList">
+                <!-- Contribution items will be injected here -->
+            </div>
+        </section>
+
+        <!-- Donation Initiative Section -->
+        <section id="donationSection" class="donation-section" style="display: none !important;">
+            <div class="donation-container">
+                <div class="donation-image-wrapper">
+                    <img src="images/donation_header.png" alt="شيتك يوصل لغيرك" class="donation-image">
+                </div>
+                <div class="donation-content">
+                    <h2 class="donation-title">شيتك يوصل لغيرك 🤝</h2>
+                    <p class="donation-description">ساهم في نشر العلم! تبرع بكتبك وشيتاتك القديمة للطلاب الجدد، فالعلم
+                        رحم بين أهله.</p>
+
+                    <form id="donationForm" class="donation-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="donorName">👤 اسم المتبرع</label>
+                                <input type="text" id="donorName" placeholder="اسمك الكريم..." required
+                                    class="donation-input">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="itemsCount">📚 العدد</label>
+                                <input type="number" id="itemsCount" min="1" placeholder="عدد الكتب..." required
+                                    class="donation-input">
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="contactInfo">📱 للتواصل (رقم/رابط)</label>
+                            <input type="text" id="contactInfo" placeholder="رقم واتساب أو رابط فيسبوك..." required
+                                class="donation-input">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="notes">📝 ملاحظات</label>
+                            <textarea id="notes" rows="3" placeholder="تفاصيل عن الكتب/الشيتات..."
+                                class="donation-input"></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-donate">تأكيد التبرع ✨</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+
+    </main>
+
+    <footer>
+        <p>تم التطوير لخدمة طلاب جامعة ناصر 🎓</p>
+        <p style="font-size: 0.9rem; margin-top: 0.5rem; opacity: 0.7;">شيتاتي 2025 © منصة طلابية تعليمية</p>
+    </footer>
+
+    <!-- Modal -->
+    <div id="modalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closeModal" class="close-btn">&times;</button>
+            <div id="modalBody">
+                <!-- Modal content injected by JS -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox" class="lightbox" onclick="closeLightbox()">
+        <button class="lightbox-close">&times;</button>
+        <img id="lightboxImg" src="" alt="تكبير">
+    </div>
+
+    <!-- Publish Modal -->
+    <div id="publishModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <button id="closePublishModal" class="close-btn">&times;</button>
+            <h2>إضافة مادة جديدة</h2>
+            <form id="publishForm" style="display: flex; flex-direction: column; gap: 10px;">
+                <input type="text" id="pubTitle" placeholder="1️⃣ اسم المادة" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                <input type="text" id="pubDoctors" placeholder="2️⃣ اسم الدكتور" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+
+                <div
+                    style="text-align: center; margin: 10px 0; padding: 10px; background-color: #f0f8ff; border-radius: 5px;">
+                    <a href="https://www.file.io/" target="_blank"
+                        style="color: #0070f3; text-decoration: none; font-weight: bold; font-size: 1rem;">
+                        3️⃣ 🔗 اضغط هنا لرفع الملف على File.io
+                    </a>
+                </div>
+
+                <input type="url" id="pubShareLink" placeholder="4️⃣ الصق هنا رابط المشاركة من File.io" required
+                    style="padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+
+                <label for="pubImageFile"
+                    style="cursor: pointer; display: block; padding: 10px; border: 1px dashed #ddd; border-radius: 5px; text-align: center; background-color: #f9f9f9;">
+                    5️⃣ اضغط هنا لاختيار صورة خلفية من جهازك 🖼️
+                    <input type="file" id="pubImageFile" accept="image/*" style="display: none;">
+                </label>
+                <div id="imagePreviewContainer" style="text-align: center; margin-top: 5px; display: none;">
+                    <img id="imagePreview" src="" alt="Preview" style="max-height: 100px; border-radius: 5px;">
+                </div>
+
+                <div style="text-align: center; font-size:0.8rem; color:#666; margin-top:5px;">
+                    سيتم عرض: اسم المادة - اسم الدكتور - رابط التحميل
+                </div>
+
+                <button type="submit" class="btn-primary" style="margin-top: 10px;">نشر الآن 🚀</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModalOverlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <button id="closeDeleteModal" class="close-btn">&times;</button>
+            <h2 style="color: #ef4444; margin-bottom: 1rem;">⚠️ تأكيد الحذف</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                لحذف هذه المادة، يرجى إدخال كود التأكيد:
+            </p>
+            <form id="deleteForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="password" id="deleteCode" placeholder="أدخل كود الحذف" required
+                    style="padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem; text-align: center;">
+                <div id="deleteError" style="color: #ef4444; font-size: 0.9rem; display: none; margin-top: -5px;">
+                    ❌ الكود غير صحيح! حاول مرة أخرى.
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="submit" class="btn-primary" style="background-color: #ef4444;">
+                        🗑️ حذف المادة
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="window.closeDeleteModal()">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating "Test Yourself" Button -->
+    <div id="testYourselfBtn" class="test-yourself-fab" title="اختبر نفسك">
+        <div class="fab-icon">📝</div>
+        <div class="fab-text">اختبر نفسك</div>
+    </div>
+
+    <!-- Test Yourself Modal -->
+    <div id="testYourselfModal" class="modal-overlay">
+        <div class="modal-content" style="max-width: 500px;">
+            <button id="closeTestYourselfModal" class="close-btn">&times;</button>
+            <div style="text-align: center;">
+                <div style="font-size: 4rem; margin-bottom: 1rem;">🤖</div>
+                <h2 style="margin-bottom: 1rem; color: var(--text-main);">اختبر نفسك</h2>
+                <p style="color: var(--text-muted); font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
+                    أرسل صور المواد الدراسية إلى بوت جامعة ناصر الذكي وسيقوم بإعطائك أسئلة متنوعة حول هذه المادة لاختبار
+                    معلوماتك! 📚✨
+                </p>
+                <a href="telegram-bot.html" target="_blank" class="btn-primary"
+                    style="display: inline-flex; align-items: center; gap: 10px; padding: 1rem 2rem; background: var(--gradient-main); border: none; border-radius: 15px; color: white; text-decoration: none; font-size: 1.1rem; font-weight: 700; transition: all 0.3s ease; box-shadow: var(--shadow);">
+                    <span>✈️</span>
+                    <span>ذهاب</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Role Selection Modal -->
+    <div id="roleModalOverlay" class="modal-overlay" style="z-index: 2000;">
+        <div class="modal-content" style="text-align: center;">
+            <h2>مرحباً بك في شيتاتي 👋</h2>
+            <p>من فضلك اختر صفتك للمتابعة:</p>
+            <div style="display: flex; gap: 15px; justify-content: center; margin-top: 20px; flex-wrap: wrap;">
+                <button id="roleStudentBtn" class="btn-primary" style="background-color: #4CAF50; width: 120px;">
+                    👨‍🎓 طالب
+                </button>
+                <button id="roleAssistantBtn" class="btn-primary" style="background-color: #FF9800; width: 120px;">
+                    👨‍💼 طالب مساعد
+                </button>
+                <button id="roleDoctorBtn" class="btn-primary" style="background-color: #2196F3; width: 120px;">
+                    👨‍🏫 دكتور
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Quiz Modal -->
+    <div id="quizModalOverlay" class="modal-overlay">
+        <div class="modal-content">
+            <div id="quizModalBody">
+                <!-- Quiz content will be injected here by quiz.js -->
+            </div>
+        </div>
+    </div>
+
+
+    <!-- Donations Page Modal -->
+    <div id="donationsPageModal" class="modal-overlay">
+        <div class="donations-page-modal">
+            <button id="closeDonationsPage" class="close-btn">&times;</button>
+
+            <!-- Header -->
+            <div class="donations-page-header">
+                <h1>🤝 شيتك يوصل لغيرك</h1>
+                <p>ساهم في نشر العلم! تبرع بكتبك وشيتاتك القديمة للطلاب الجدد، فالعلم رحم بين أهله.</p>
+            </div>
+
+            <!-- Statistics -->
+            <div class="donations-page-stats">
+                <div class="stat-card">
+                    <span class="stat-number" id="modalTotalContributions">0</span>
+                    <span class="stat-label">مساهمة</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-number" id="modalTotalBooks">0</span>
+                    <span class="stat-label">كتاب/شيت</span>
+                </div>
+            </div>
+
+            <!-- Add New Donation Button -->
+            <button id="showDonationFormBtn" class="add-donation-btn">
+                <span class="btn-icon">➕</span>
+                <span>إضافة تبرع جديد</span>
+            </button>
+
+            <!-- Donation Form (Hidden by default) -->
+            <div id="donationFormContainer" class="donation-form-container" style="display: none;">
+                <h3>📝 تفاصيل التبرع</h3>
+
+                <!-- Display Generated Code -->
+                <div class="generated-code-alert"
+                    style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 15px; text-align: center; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3); animation: slideDown 0.5s ease-out;">
+                    <div
+                        style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 10px;">
+                        <span style="font-size: 2rem;">🔑</span>
+                        <h4 style="color: white; margin: 0; font-size: 1.2rem; font-weight: 700;">كود حذف التبرع الخاص
+                            بك</h4>
+                    </div>
+                    <div
+                        style="background: rgba(255, 255, 255, 0.2); padding: 15px; border-radius: 10px; margin: 15px 0; backdrop-filter: blur(10px);">
+                        <div id="generatedDonationCode"
+                            style="font-size: 2rem; font-weight: bold; color: white; letter-spacing: 8px; font-family: 'Courier New', monospace; text-shadow: 0 2px 10px rgba(0,0,0,0.2);">
+                            ------</div>
+                        <button type="button" id="copyDonationCodeBtn" onclick="copyDonationCode()"
+                            style="margin-top: 12px; padding: 8px 20px; background: rgba(255,255,255,0.25); color: white; border: 2px solid rgba(255,255,255,0.4); border-radius: 8px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; font-size: 0.9rem;">
+                            📋 نسخ الكود
+                        </button>
+                    </div>
+                    <div
+                        style="display: flex; align-items: center; justify-content: center; gap: 8px; color: rgba(255,255,255,0.95); font-size: 0.9rem; line-height: 1.6;">
+                        <span style="font-size: 1.2rem;">⚠️</span>
+                        <p style="margin: 0;">
+                            <strong>مهم جداً:</strong> احفظ هذا الكود الآن! ستحتاجه لحذف التبرع لاحقاً
+                        </p>
+                    </div>
+                    <div
+                        style="margin-top: 15px; padding: 10px; background: rgba(255,255,255,0.15); border-radius: 8px;">
+                        <p style="margin: 0; color: rgba(255,255,255,0.9); font-size: 0.85rem;">
+                            💡 نصيحة: صوّر الكود أو اكتبه في مكان آمن قبل إكمال التبرع
+                        </p>
+                    </div>
+                </div>
+
+                <form id="modalDonationForm" class="modal-donation-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="modalDonorName">👤 اسم المتبرع</label>
+                            <input type="text" id="modalDonorName" placeholder="اسمك الكريم..." required>
+                        </div>
+                        <div class="form-group">
+                            <label for="modalItemsCount">📚 العدد</label>
+                            <input type="number" id="modalItemsCount" min="1" placeholder="عدد الكتب..." required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalSubjectNames">📖 أسماء المواد المتبرع بها</label>
+                        <input type="text" id="modalSubjectNames" placeholder="مثال: اقتصاد، محاسبة، إحصاء..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalProfessorName">👨‍🏫 اسم دكتور المادة</label>
+                        <input type="text" id="modalProfessorName" placeholder="مثال: د. أحمد محمد..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalContactInfo">📱 للتواصل (رقم/رابط)</label>
+                        <input type="text" id="modalContactInfo" placeholder="رقم واتساب أو رابط فيسبوك..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalNotes">📝 ملاحظات</label>
+                        <textarea id="modalNotes" rows="3" placeholder="تفاصيل عن الكتب/الشيتات..."></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="modalDonationImage"
+                            style="cursor: pointer; display: block; padding: 15px; border: 2px dashed #ddd; border-radius: 10px; text-align: center; background-color: #f9f9f9; transition: all 0.3s ease;">
+                            📷 إضافة صورة للمادة المتبرع بها (اختياري)
+                            <input type="file" id="modalDonationImage" accept="image/*" style="display: none;">
+                        </label>
+                        <div id="modalDonationImagePreview"
+                            style="text-align: center; margin-top: 10px; display: none;">
+                            <img id="modalDonationImagePreviewImg" src="" alt="معاينة"
+                                style="max-height: 150px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                            <button type="button" id="removeDonationImage"
+                                style="display: block; margin: 10px auto; padding: 5px 15px; background: #ef4444; color: white; border: none; border-radius: 5px; cursor: pointer;">❌
+                                إزالة الصورة</button>
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">تأكيد التبرع ✨</button>
+                        <button type="button" id="cancelDonationFormBtn" class="btn-cancel">إلغاء</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- All Contributions List -->
+            <div class="donations-page-content">
+                <h2>📋 جميع المساهمات</h2>
+                <div id="modalContributionsList" class="modal-contributions-list">
+                    <!-- Contributions will be injected here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Delete Donation Modal -->
+    <div id="deleteDonationModalOverlay" class="modal-overlay">
+        <div class="modal-content" style="max-width: 450px; text-align: center;">
+            <button id="closeDeleteDonationModal" class="close-btn">&times;</button>
+            <h2 style="color: #ef4444; margin-bottom: 1rem;">⚠️ حذف التبرع</h2>
+            <p style="color: var(--text-muted); margin-bottom: 1.5rem;">
+                لحذف هذا التبرع، يرجى إدخال الكود الخاص بك الذي حصلت عليه عند التبرع:
+            </p>
+            <form id="deleteDonationForm" style="display: flex; flex-direction: column; gap: 15px;">
+                <input type="text" id="deleteDonationCode" placeholder="أدخل كود التبرع" required
+                    style="padding: 12px; border: 2px solid #ddd; border-radius: 10px; font-size: 1.1rem; text-align: center; text-transform: uppercase; letter-spacing: 2px;">
+                <div id="deleteDonationError"
+                    style="color: #ef4444; font-size: 0.9rem; display: none; margin-top: -5px;">
+                    ❌ الكود غير صحيح! تأكد من الكود وحاول مرة أخرى.
+                </div>
+                <div style="display: flex; gap: 10px; justify-content: center;">
+                    <button type="submit" class="btn-primary" style="background-color: #ef4444;">
+                        🗑️ حذف التبرع
+                    </button>
+                    <button type="button" class="btn-secondary" onclick="window.closeDeleteDonationModal()">
+                        إلغاء
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- UI Logic (Independent of Database) -->
+    <!-- Firebase Compat (for file:// support) -->
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-analytics-compat.js"></script>
+
+    <script src="ui.js" defer></script>
+    <script src="firebase-init.js"></script>
+    <script src="rating.js"></script>
+    <script src="quiz.js"></script>
+    <script src="notifications.js"></script>
+    <script src="donations-modal.js"></script>
+    <!-- data.js removed to avoid conflicts, data is handled by script.js -->
+    <script src="script.js"></script>
+</body>
+
+</html>
